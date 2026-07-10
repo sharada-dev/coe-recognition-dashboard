@@ -1,0 +1,755 @@
+<title>Kudos — COE Recognition Dashboard</title>
+<style>
+  :root{
+    --bg:#F4F6F5; --surface:#FFFFFF; --surface-2:#FAFBFA;
+    --ink:#191D1B; --muted:#5C6560; --faint:#8B938E;
+    --border:#E4E8E5; --border-strong:#D3D9D5;
+    --accent:#0F6E5E; --accent-ink:#0B564A; --accent-tint:#E7F1EE; --accent-tint-2:#D6E8E3;
+    --gold:#8A5E10; --gold-tint:#F6EBD2; --gold-line:#E4CE9C;
+    --blue:#2F6FB0; --violet:#6D4AA6; --rose:#A6455F; --cyan:#12807A; --slate:#5B6672;
+    --good:#1E7A4C; --warn:#9A6B12;
+    --shadow:0 1px 2px rgba(16,32,28,.05), 0 4px 18px rgba(16,32,28,.05);
+    --shadow-lg:0 12px 40px rgba(16,32,28,.16);
+    --r:12px; --r-sm:8px; --r-pill:999px;
+    --serif:Georgia,"Iowan Old Style","Times New Roman",serif;
+    --sans:"Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,Helvetica,Arial,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#0D1411; --surface:#141C18; --surface-2:#101613;
+      --ink:#E9EEEB; --muted:#9AA6A0; --faint:#77837D;
+      --border:#233029; --border-strong:#2F3E36;
+      --accent:#3FBFA6; --accent-ink:#8FE0D0; --accent-tint:#12302A; --accent-tint-2:#194138;
+      --gold:#D9AD54; --gold-tint:#2C2411; --gold-line:#4A3C1C;
+      --blue:#6AA6E0; --violet:#A98BD8; --rose:#DD8AA0; --cyan:#4FC3B8; --slate:#93A0A9;
+      --good:#4FC98A; --warn:#D9AD54;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 26px rgba(0,0,0,.36);
+      --shadow-lg:0 16px 50px rgba(0,0,0,.55);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0D1411; --surface:#141C18; --surface-2:#101613;
+    --ink:#E9EEEB; --muted:#9AA6A0; --faint:#77837D;
+    --border:#233029; --border-strong:#2F3E36;
+    --accent:#3FBFA6; --accent-ink:#8FE0D0; --accent-tint:#12302A; --accent-tint-2:#194138;
+    --gold:#D9AD54; --gold-tint:#2C2411; --gold-line:#4A3C1C;
+    --blue:#6AA6E0; --violet:#A98BD8; --rose:#DD8AA0; --cyan:#4FC3B8; --slate:#93A0A9;
+    --good:#4FC98A; --warn:#D9AD54;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 26px rgba(0,0,0,.36);
+    --shadow-lg:0 16px 50px rgba(0,0,0,.55);
+  }
+  :root[data-theme="light"]{
+    --bg:#F4F6F5; --surface:#FFFFFF; --surface-2:#FAFBFA;
+    --ink:#191D1B; --muted:#5C6560; --faint:#8B938E;
+    --border:#E4E8E5; --border-strong:#D3D9D5;
+    --accent:#0F6E5E; --accent-ink:#0B564A; --accent-tint:#E7F1EE; --accent-tint-2:#D6E8E3;
+    --gold:#8A5E10; --gold-tint:#F6EBD2; --gold-line:#E4CE9C;
+    --blue:#2F6FB0; --violet:#6D4AA6; --rose:#A6455F; --cyan:#12807A; --slate:#5B6672;
+    --good:#1E7A4C; --warn:#9A6B12;
+    --shadow:0 1px 2px rgba(16,32,28,.05), 0 4px 18px rgba(16,32,28,.05);
+    --shadow-lg:0 12px 40px rgba(16,32,28,.16);
+  }
+
+  *{box-sizing:border-box}
+  body{margin:0}
+  .app{
+    font-family:var(--sans); color:var(--ink); background:var(--bg);
+    min-height:100vh; font-size:14px; line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1180px; margin:0 auto; padding:0 20px}
+  a{color:inherit}
+  button{font-family:inherit; cursor:pointer}
+  h1,h2,h3{margin:0}
+  ::selection{background:var(--accent-tint-2)}
+
+  /* ---------- Top bar ---------- */
+  .topbar{
+    position:sticky; top:0; z-index:40; background:color-mix(in srgb, var(--surface) 88%, transparent);
+    backdrop-filter:saturate(1.4) blur(10px); border-bottom:1px solid var(--border);
+  }
+  .topbar-in{display:flex; align-items:center; gap:16px; height:60px}
+  .brand{display:flex; align-items:center; gap:10px; margin-right:6px}
+  .seal{
+    width:32px; height:32px; border-radius:9px; flex:none;
+    background:linear-gradient(150deg, var(--accent), var(--accent-ink));
+    display:grid; place-items:center; color:#fff; box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);
+  }
+  .seal svg{width:18px; height:18px}
+  .wordmark{font-family:var(--serif); font-size:19px; font-weight:700; letter-spacing:.2px}
+  .wordmark .sub{font-family:var(--sans); font-weight:600; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); display:block; margin-top:-2px}
+  .top-spacer{flex:1}
+  .chip-region{
+    display:inline-flex; align-items:center; gap:7px; font-size:12.5px; font-weight:600; color:var(--muted);
+    border:1px solid var(--border); background:var(--surface-2); padding:6px 11px; border-radius:var(--r-pill);
+  }
+  .chip-region .dot2{width:7px;height:7px;border-radius:50%;background:var(--accent)}
+  .icon-btn{
+    width:36px;height:36px;border-radius:9px;border:1px solid var(--border); background:var(--surface);
+    display:grid;place-items:center;color:var(--muted)
+  }
+  .icon-btn:hover{color:var(--ink); border-color:var(--border-strong)}
+  .icon-btn svg{width:17px;height:17px}
+  .me{display:flex;align-items:center;gap:9px}
+  .me .who{text-align:right; line-height:1.15}
+  .me .who b{font-size:12.5px; display:block}
+  .me .who span{font-size:11px; color:var(--muted)}
+
+  .avatar{border-radius:50%; display:grid; place-items:center; color:#fff; font-weight:700; flex:none; letter-spacing:.2px; box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
+  .avatar.sm{width:26px;height:26px;font-size:10.5px}
+  .avatar.md{width:34px;height:34px;font-size:12px}
+  .avatar.lg{width:40px;height:40px;font-size:13.5px}
+
+  /* ---------- Nav tabs ---------- */
+  .navrow{display:flex; align-items:center; gap:6px; height:52px}
+  .tab{
+    border:none;background:none;color:var(--muted);font-weight:600;font-size:13.5px;
+    padding:8px 13px;border-radius:8px;display:inline-flex;align-items:center;gap:8px; position:relative;
+  }
+  .tab:hover{color:var(--ink); background:var(--surface-2)}
+  .tab.active{color:var(--accent); background:var(--accent-tint)}
+  .tab .count{font-size:11px;font-weight:700;background:var(--surface);border:1px solid var(--border);color:var(--muted);padding:1px 6px;border-radius:var(--r-pill); font-variant-numeric:tabular-nums}
+  .tab.active .count{background:var(--surface); border-color:var(--accent-tint-2); color:var(--accent)}
+  .nav-spacer{flex:1}
+  .btn{
+    border:1px solid transparent; border-radius:9px; font-weight:600; font-size:13.5px;
+    padding:9px 15px; display:inline-flex; align-items:center; gap:8px; transition:.14s;
+  }
+  .btn svg{width:16px;height:16px}
+  .btn-primary{background:var(--accent); color:#fff; box-shadow:var(--shadow)}
+  .btn-primary:hover{background:var(--accent-ink)}
+  .btn-ghost{background:var(--surface); border-color:var(--border); color:var(--ink)}
+  .btn-ghost:hover{border-color:var(--border-strong)}
+  .btn:focus-visible, .tab:focus-visible, .icon-btn:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+
+  /* ---------- Layout ---------- */
+  main{padding:22px 0 80px}
+  .view-head{margin-bottom:18px}
+  .eyebrow{font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); margin-bottom:6px}
+  .view-head h2{font-size:22px; font-weight:700; letter-spacing:-.2px}
+  .view-head p{color:var(--muted); margin:5px 0 0; max-width:62ch}
+
+  /* KPI strip */
+  .kpis{display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:22px}
+  .kpi{background:var(--surface); border:1px solid var(--border); border-radius:var(--r); padding:15px 16px; box-shadow:var(--shadow)}
+  .kpi .lab{font-size:11.5px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.05em}
+  .kpi .num{font-family:var(--serif); font-size:29px; font-weight:700; line-height:1.05; margin-top:8px; font-variant-numeric:tabular-nums}
+  .kpi .meta{font-size:11.5px; margin-top:5px; display:flex; align-items:center; gap:6px; color:var(--muted)}
+  .kpi .tick{color:var(--good); font-weight:700}
+  .goalbar{height:5px;border-radius:3px;background:var(--border);margin-top:10px;overflow:hidden}
+  .goalbar i{display:block;height:100%;border-radius:3px;background:var(--accent)}
+  .goalbar.gold i{background:var(--gold)}
+
+  .layout{display:grid; grid-template-columns:236px 1fr; gap:24px; align-items:start}
+
+  /* Filters */
+  .filters{position:sticky; top:132px; background:var(--surface); border:1px solid var(--border); border-radius:var(--r); padding:6px; box-shadow:var(--shadow)}
+  .filters .fhead{display:flex;align-items:center;justify-content:space-between;padding:10px 10px 8px}
+  .filters .fhead b{font-size:12.5px; letter-spacing:.02em}
+  .clear{border:none;background:none;color:var(--accent);font-weight:600;font-size:12px;padding:2px 4px;border-radius:6px}
+  .clear:hover{background:var(--accent-tint)}
+  .clear[disabled]{color:var(--faint);cursor:default;background:none}
+  .fgroup{padding:8px 10px}
+  .fgroup label{display:block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin-bottom:6px}
+  select, input[type=text], input[type=url], textarea{
+    width:100%; font-family:inherit; font-size:13px; color:var(--ink); background:var(--surface-2);
+    border:1px solid var(--border); border-radius:var(--r-sm); padding:8px 10px; transition:.14s;
+  }
+  select{appearance:none; background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%235C6560' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'><path d='M6 9l6 6 6-6'/></svg>"); background-repeat:no-repeat; background-position:right 9px center; padding-right:30px; cursor:pointer}
+  select:focus, input:focus, textarea:focus{outline:none; border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-tint)}
+  .fgroup.divider{border-top:1px solid var(--border); margin-top:2px}
+
+  /* Feed */
+  .feedbar{display:flex; align-items:center; justify-content:space-between; margin-bottom:12px}
+  .result-n{font-size:12.5px;color:var(--muted); font-weight:500}
+  .result-n b{color:var(--ink); font-variant-numeric:tabular-nums}
+  .sortsel{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:var(--muted)}
+  .sortsel select{width:auto;padding:5px 26px 5px 9px;font-size:12.5px;background-color:var(--surface)}
+
+  .feed{display:flex; flex-direction:column; gap:12px}
+  .card{background:var(--surface); border:1px solid var(--border); border-radius:var(--r); padding:16px 17px; box-shadow:var(--shadow); transition:.14s}
+  .card:hover{border-color:var(--border-strong)}
+  .card.mine{border-left:3px solid var(--accent)}
+  .card-top{display:flex; gap:12px; align-items:flex-start}
+  .card-top .who{flex:1; min-width:0}
+  .card-top .who .nm{font-weight:600; font-size:13.5px}
+  .card-top .who .role{color:var(--muted); font-size:11.5px}
+  .card-top .who .role .loc:before{content:"·"; margin:0 5px; color:var(--faint)}
+  .card-date{font-size:11.5px;color:var(--faint); white-space:nowrap; padding-top:2px}
+  .card h3{font-size:16px; font-weight:650; letter-spacing:-.1px; margin:13px 0 6px; text-wrap:balance}
+  .card .desc{color:var(--muted); font-size:13px; margin:0}
+  .badges{display:flex; flex-wrap:wrap; gap:7px; margin-top:12px; align-items:center}
+
+  .cat{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:var(--ink);border:1px solid var(--border-strong);background:var(--surface-2);padding:3px 9px 3px 8px;border-radius:var(--r-pill)}
+  .cat .dot{width:7px;height:7px;border-radius:50%}
+  .pill{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:var(--r-pill);letter-spacing:.01em}
+  .pill svg{width:12px;height:12px}
+  .pill--rating{background:var(--gold-tint);color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold-line)}
+  .pill--tl{background:var(--accent-tint);color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent-tint-2)}
+  .pill--sharing{background:var(--surface-2);color:var(--muted);box-shadow:inset 0 0 0 1px var(--border)}
+
+  .card-foot{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:14px; padding-top:13px; border-top:1px solid var(--border)}
+  .ev{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;color:var(--accent);text-decoration:none;border-radius:6px}
+  .ev:hover{text-decoration:underline}
+  .ev svg{width:14px;height:14px}
+  .ev.none{color:var(--faint);font-weight:500;font-style:italic; cursor:default}
+  .foot-right{display:flex;align-items:center;gap:10px}
+  .endorsers{display:flex}
+  .endorsers .avatar{margin-left:-7px;border:2px solid var(--surface)}
+  .endorsers .avatar:first-child{margin-left:0}
+  .endorse{
+    display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;color:var(--muted);
+    background:var(--surface);border:1px solid var(--border);border-radius:var(--r-pill);padding:5px 12px;transition:.14s
+  }
+  .endorse svg{width:14px;height:14px}
+  .endorse:hover:not([disabled]){border-color:var(--accent);color:var(--accent)}
+  .endorse.on{background:var(--accent-tint);border-color:var(--accent-tint-2);color:var(--accent)}
+  .endorse[disabled]{opacity:.55;cursor:not-allowed}
+  .endorse .n{font-variant-numeric:tabular-nums}
+  .rowtools{display:flex;gap:4px}
+  .tool{width:30px;height:30px;border-radius:7px;border:1px solid var(--border);background:var(--surface);display:grid;place-items:center;color:var(--muted)}
+  .tool:hover{color:var(--ink);border-color:var(--border-strong)}
+  .tool.danger:hover{color:#fff;background:var(--rose);border-color:var(--rose)}
+  .tool svg{width:15px;height:15px}
+
+  .empty{text-align:center;padding:56px 20px;color:var(--muted);background:var(--surface);border:1px dashed var(--border-strong);border-radius:var(--r)}
+  .empty svg{width:34px;height:34px;color:var(--faint);margin-bottom:10px}
+  .empty b{display:block;color:var(--ink);font-size:15px;margin-bottom:4px}
+
+  /* Manager digest */
+  .digest-banner{display:flex;gap:13px;align-items:flex-start;background:var(--gold-tint);border:1px solid var(--gold-line);border-radius:var(--r);padding:14px 16px;margin-bottom:20px}
+  .digest-banner svg{width:20px;height:20px;color:var(--gold);flex:none;margin-top:1px}
+  .digest-banner b{color:var(--gold)}
+  .digest-banner p{margin:3px 0 0;color:var(--ink);font-size:12.5px;max-width:70ch}
+  .person-block{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);margin-bottom:14px;overflow:hidden}
+  .person-head{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--border);background:var(--surface-2)}
+  .person-head .who{flex:1}
+  .person-head .nm{font-weight:650;font-size:14px}
+  .person-head .role{font-size:11.5px;color:var(--muted)}
+  .tagcount{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:var(--r-pill)}
+  .tagcount.g{background:var(--gold-tint);color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold-line)}
+  .tagcount.t{background:var(--accent-tint);color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent-tint-2)}
+  .person-entries{padding:6px 8px}
+  .mini{display:flex;align-items:flex-start;gap:11px;padding:11px 10px;border-radius:var(--r-sm)}
+  .mini + .mini{border-top:1px solid var(--border)}
+  .mini.dim{opacity:.62}
+  .mini .stripe{width:3px;align-self:stretch;border-radius:3px;background:var(--border);flex:none;min-height:34px}
+  .mini.rating .stripe{background:var(--gold)}
+  .mini.tl .stripe{background:var(--accent)}
+  .mini .body{flex:1;min-width:0}
+  .mini .body .mt{font-weight:600;font-size:13.5px}
+  .mini .body .md{font-size:12px;color:var(--muted);margin-top:2px}
+  .mini .body .meta{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px;align-items:center}
+
+  /* ---------- Slide-over form ---------- */
+  .overlay{position:fixed;inset:0;background:rgba(12,20,17,.44);opacity:0;pointer-events:none;transition:.2s;z-index:60}
+  .overlay.show{opacity:1;pointer-events:auto}
+  .sheet{
+    position:fixed;top:0;right:0;height:100%;width:460px;max-width:94vw;background:var(--surface);
+    box-shadow:var(--shadow-lg);z-index:70;transform:translateX(100%);transition:transform .24s cubic-bezier(.32,.72,.24,1);
+    display:flex;flex-direction:column;
+  }
+  .sheet.show{transform:translateX(0)}
+  .sheet-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:20px 22px 14px;border-bottom:1px solid var(--border)}
+  .sheet-head .eyebrow{margin-bottom:5px}
+  .sheet-head h3{font-size:18px;font-weight:700}
+  .sheet-head p{color:var(--muted);font-size:12.5px;margin:4px 0 0}
+  .sheet-body{padding:18px 22px;overflow-y:auto;flex:1}
+  .field{margin-bottom:16px}
+  .field > label{display:block;font-size:12.5px;font-weight:650;margin-bottom:6px}
+  .field .req{color:var(--rose);margin-left:2px}
+  .field .opt{color:var(--faint);font-weight:500;font-size:11.5px;margin-left:5px}
+  textarea{resize:vertical;min-height:82px;line-height:1.5}
+  .hint{font-size:11.5px;color:var(--muted);margin-top:6px;display:flex;gap:6px;align-items:flex-start}
+  .hint svg{width:13px;height:13px;flex:none;margin-top:1px;color:var(--gold)}
+  .field.invalid input,.field.invalid textarea,.field.invalid select{border-color:var(--rose);box-shadow:0 0 0 3px color-mix(in srgb,var(--rose) 18%,transparent)}
+  .err{display:none;color:var(--rose);font-size:11.5px;font-weight:600;margin-top:5px}
+  .field.invalid .err{display:block}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .sheet-foot{display:flex;gap:10px;justify-content:flex-end;padding:15px 22px;border-top:1px solid var(--border);background:var(--surface-2)}
+
+  /* Toast */
+  .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);
+    padding:11px 18px;border-radius:var(--r-pill);font-size:13px;font-weight:600;box-shadow:var(--shadow-lg);z-index:90;opacity:0;pointer-events:none;transition:.22s;display:flex;align-items:center;gap:9px}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .toast svg{width:16px;height:16px;color:var(--accent-ink)}
+  :root[data-theme="dark"] .toast svg,@media (prefers-color-scheme:dark){.toast svg{color:var(--accent)}}
+
+  .note{font-size:12px;color:var(--muted);background:var(--surface-2);border:1px dashed var(--border-strong);border-radius:var(--r-sm);padding:9px 12px;margin-bottom:16px;display:flex;gap:8px;align-items:flex-start}
+  .note svg{width:15px;height:15px;color:var(--accent);flex:none;margin-top:1px}
+
+  /* ---------- Responsive ---------- */
+  @media (max-width:860px){
+    .layout{grid-template-columns:1fr}
+    .filters{position:static}
+    .kpis{grid-template-columns:repeat(2,1fr)}
+    .me .who{display:none}
+    .wordmark .sub{display:none}
+    .navrow{overflow-x:auto}
+  }
+  @media (max-width:520px){
+    .kpis{grid-template-columns:1fr 1fr}
+    .card-foot{flex-direction:column;align-items:flex-start;gap:11px}
+    .chip-region{display:none}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="app">
+  <!-- Top bar -->
+  <header class="topbar">
+    <div class="wrap topbar-in">
+      <div class="brand">
+        <div class="seal" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.21 13.89 7 23l5-3 5 3-1.21-9.12"/><circle cx="12" cy="8" r="6"/></svg>
+        </div>
+        <div class="wordmark">Kudos<span class="sub">India · Brazil Commerce COE</span></div>
+      </div>
+      <span class="chip-region"><span class="dot2"></span>Commerce COE · Pilot</span>
+      <div class="top-spacer"></div>
+      <button class="icon-btn" id="themeBtn" title="Toggle theme" aria-label="Toggle light/dark theme">
+        <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+      <div class="me">
+        <div class="who"><b>Sharada Rao</b><span>Developer · Bengaluru</span></div>
+        <div class="avatar md" style="background:#2F6FB0">SR</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Nav -->
+  <nav class="topbar" style="top:60px;z-index:35">
+    <div class="wrap navrow">
+      <button class="tab active" data-view="feed">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="6" rx="1.5"/><rect x="3" y="14" width="18" height="6" rx="1.5"/></svg>
+        COE Feed
+      </button>
+      <button class="tab" data-view="mine">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        My Entries <span class="count" id="mineCount">0</span>
+      </button>
+      <button class="tab" data-view="digest">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Manager Digest
+      </button>
+      <div class="nav-spacer"></div>
+      <button class="btn btn-primary" id="newBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+        New Entry
+      </button>
+    </div>
+  </nav>
+
+  <main class="wrap" id="main"></main>
+</div>
+
+<!-- Slide-over form -->
+<div class="overlay" id="overlay"></div>
+<aside class="sheet" id="sheet" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+  <div class="sheet-head">
+    <div>
+      <div class="eyebrow" id="sheetEyebrow">Log your work</div>
+      <h3 id="sheetTitle">New entry</h3>
+      <p>Surface something you're proud of — a feature, a cert, client praise, or an idea.</p>
+    </div>
+    <button class="icon-btn" id="closeSheet" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <form class="sheet-body" id="entryForm" novalidate>
+    <div class="field" data-req id="f-title">
+      <label for="i-title">Title <span class="req">*</span></label>
+      <input type="text" id="i-title" placeholder="e.g. Cut checkout API p95 latency by 38%" maxlength="90">
+      <div class="err">Give your entry a short title.</div>
+    </div>
+
+    <div class="field" data-req id="f-cat">
+      <label for="i-cat">Category <span class="req">*</span></label>
+      <select id="i-cat">
+        <option value="">Select a category…</option>
+        <option value="feature">Feature / Project Contribution</option>
+        <option value="cert">Certification</option>
+        <option value="client">Client Recognition</option>
+        <option value="idea">Technical Idea / POC</option>
+        <option value="other">Other</option>
+      </select>
+      <div class="err">Pick a category.</div>
+    </div>
+
+    <div class="field" data-req id="f-desc">
+      <label for="i-desc">Description <span class="req">*</span></label>
+      <textarea id="i-desc" placeholder="What did you do — and why does it matter? Include the impact."></textarea>
+      <div class="err">Add a short description of what was done and its impact.</div>
+    </div>
+
+    <div class="field" id="f-ev">
+      <label for="i-ev">Evidence link <span class="opt">optional but encouraged</span></label>
+      <input type="url" id="i-ev" placeholder="https:// PR, cert, client email screenshot, doc…">
+      <div class="hint" id="ev-nudge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><circle cx="12" cy="12" r="10"/></svg>
+        A PR, cert URL, or a quoted client email makes your entry credible — not just self-reported.
+      </div>
+    </div>
+
+    <div class="two">
+      <div class="field" id="f-tag">
+        <label for="i-tag">Self-tag <span class="opt">optional</span></label>
+        <select id="i-tag">
+          <option value="sharing">Just sharing</option>
+          <option value="tl">TL case</option>
+          <option value="rating">Rating support</option>
+        </select>
+      </div>
+      <div class="field" data-req id="f-q">
+        <label for="i-q">Quarter <span class="req">*</span></label>
+        <select id="i-q">
+          <option value="Q3 2026">Q3 2026</option>
+          <option value="Q2 2026">Q2 2026</option>
+          <option value="Q1 2026">Q1 2026</option>
+        </select>
+        <div class="err">Pick a quarter.</div>
+      </div>
+    </div>
+    <div class="hint" id="tag-nudge">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 13.42 20.6a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82Z"/><path d="M7 7h.01"/></svg>
+      Tag it <b>&nbsp;Rating support&nbsp;</b> or <b>&nbsp;TL case&nbsp;</b> to flag it for appraisal time — otherwise it's shared for visibility only.
+    </div>
+  </form>
+  <div class="sheet-foot">
+    <button class="btn btn-ghost" id="cancelSheet">Cancel</button>
+    <button class="btn btn-primary" id="submitEntry" type="submit" form="entryForm">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+      <span id="submitLabel">Post entry</span>
+    </button>
+  </div>
+</aside>
+
+<div class="toast" id="toast"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span id="toastMsg"></span></div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---------- People ----------
+  var P = {
+    ananya:{name:"Sharada Rao", role:"Developer", loc:"Bengaluru", ini:"SR", c:"#2F6FB0"},
+    rafael:{name:"Rafael Souza", role:"Tech Lead", loc:"São Paulo", ini:"RS", c:"#0F6E5E"},
+    karthik:{name:"Pushpa Gupta", role:"Architect", loc:"Chennai", ini:"PG", c:"#6D4AA6"},
+    beatriz:{name:"Beatriz Almeida", role:"Developer", loc:"Belo Horizonte", ini:"BA", c:"#A6455F"},
+    vikram:{name:"Nitin Pawar", role:"Tech Lead", loc:"Bengaluru", ini:"NP", c:"#12807A"},
+    priya:{name:"Rutvee Sojitra", role:"Developer", loc:"Kochi", ini:"RS", c:"#B5732A"},
+    lucas:{name:"Lucas Oliveira", role:"Developer", loc:"São Paulo", ini:"LO", c:"#3A6B4E"},
+    sneha:{name:"Shilpa Sirsi", role:"Architect", loc:"Pune", ini:"SS", c:"#8A5E9E"}
+  };
+  var ME = "ananya";
+  // Deepak Rao's direct reports (manager digest)
+  var TEAM = ["ananya","priya","karthik","vikram"];
+
+  var CAT = {
+    feature:{label:"Feature / Project", dot:"var(--blue)"},
+    cert:{label:"Certification", dot:"var(--violet)"},
+    client:{label:"Client Recognition", dot:"var(--rose)"},
+    idea:{label:"Technical Idea / POC", dot:"var(--cyan)"},
+    other:{label:"Other", dot:"var(--slate)"}
+  };
+  var TAG = {
+    rating:{label:"Rating support", cls:"pill--rating", tc:"g"},
+    tl:{label:"TL case", cls:"pill--tl", tc:"t"},
+    sharing:{label:"Just sharing", cls:"pill--sharing"}
+  };
+
+  // ---------- Seed entries ----------
+  var uid = 100;
+  var entries = [
+    {id:++uid, who:"ananya", title:"Cut checkout API p95 latency by 38%", cat:"feature", tag:"rating", q:"Q3 2026", date:"2026-07-08",
+     desc:"Profiled the cart→checkout call path, removed two N+1 queries and added a Redis read-through cache. p95 dropped from 940ms to 585ms in prod; client's conversion team flagged it as noticeably snappier.",
+     ev:{label:"View PR #4821", url:"#"}, endorsers:["rafael","karthik"]},
+    {id:++uid, who:"rafael", title:"AWS Solutions Architect – Professional", cat:"cert", tag:"tl", q:"Q3 2026", date:"2026-07-05",
+     desc:"Cleared the SA-Pro exam. Directly relevant to the multi-region work we're scoping for the LATAM client — planning to lead that design.",
+     ev:{label:"Credly badge", url:"#"}, endorsers:["vikram","lucas","sneha"]},
+    {id:++uid, who:"beatriz", title:"Client shout-out on catalog re-index rewrite", cat:"client", tag:"sharing", q:"Q3 2026", date:"2026-07-02",
+     desc:"Client's e-comm lead emailed the account team: re-index went from 6 hours to 40 minutes, unblocking their weekend promo drops. Sharing the quote for visibility.",
+     ev:{label:"Client email quote", url:"#"}, endorsers:["priya"]},
+    {id:++uid, who:"karthik", title:"POC: event-driven inventory sync with Kafka", cat:"idea", tag:"tl", q:"Q2 2026", date:"2026-06-24",
+     desc:"Built a working POC replacing the nightly batch inventory job with a Kafka stream — near-real-time stock across 3 storefronts. Proposing we productionise it next quarter.",
+     ev:{label:"Design doc + demo", url:"#"}, endorsers:["rafael","ananya","vikram","sneha"]},
+    {id:++uid, who:"ananya", title:"Reduced checkout flaky tests from 12% → 2%", cat:"feature", tag:"rating", q:"Q2 2026", date:"2026-06-18",
+     desc:"Stabilised the flakiest suite in the pipeline by fixing async race conditions and quarantining 4 genuinely broken tests. CI is green far more often; fewer re-runs for the whole squad.",
+     ev:{label:"View PR #4655", url:"#"}, endorsers:["priya","lucas"]},
+    {id:++uid, who:"priya", title:"Adobe Commerce Developer Expert", cat:"cert", tag:"sharing", q:"Q2 2026", date:"2026-06-11",
+     desc:"Passed the Adobe Commerce (Magento) Developer Expert certification. Happy to help others prepping — notes are in the COE wiki.",
+     ev:null, endorsers:["ananya"]},
+    {id:++uid, who:"vikram", title:"Mentored 3 juniors through their first prod deploy", cat:"other", tag:"tl", q:"Q2 2026", date:"2026-06-03",
+     desc:"Ran a 3-week shadowing rotation; all three shipped and owned a production change end-to-end, including rollback drills. Building the bench for the COE.",
+     ev:{label:"Rotation plan", url:"#"}, endorsers:["karthik","rafael"]},
+    {id:++uid, who:"sneha", title:"Design doc: multi-region failover for cart service", cat:"idea", tag:"rating", q:"Q2 2026", date:"2026-05-27",
+     desc:"Authored the failover architecture the COE is adopting as its reference — active-active cart with region-aware routing and a tested RTO under 90s.",
+     ev:{label:"Architecture doc", url:"#"}, endorsers:["karthik","rafael","vikram"]},
+    {id:++uid, who:"lucas", title:"Built shared Playwright test harness for the COE", cat:"feature", tag:"sharing", q:"Q1 2026", date:"2026-03-19",
+     desc:"Packaged our e2e setup into a reusable harness two other project teams have now adopted, saving each a week of setup.",
+     ev:{label:"Repo README", url:"#"}, endorsers:["beatriz","priya"]}
+  ];
+
+  // ---------- Helpers ----------
+  var $ = function(s,r){return (r||document).querySelector(s)};
+  var main = $("#main");
+  var state = {view:"feed", filters:{who:"",cat:"",q:"",tag:""}, sort:"new", editId:null};
+
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+  function av(key,size){var p=P[key];return '<div class="avatar '+(size||"sm")+'" style="background:'+p.c+'" title="'+esc(p.name)+'">'+p.ini+'</div>'}
+  function fmtDate(iso){var m=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];var d=iso.split("-");return parseInt(d[2],10)+" "+m[parseInt(d[1],10)-1]+" "+d[0]}
+  function catChip(c){return '<span class="cat"><span class="dot" style="background:'+CAT[c].dot+'"></span>'+CAT[c].label+'</span>'}
+  function tagPill(t){
+    var star='<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.8 5.9 20.4l1.4-6.8L2.2 9l6.9-.7z"/></svg>';
+    var flag='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><path d="M4 22V4"/></svg>';
+    var ic = t==="rating"?star : t==="tl"?flag : "";
+    return '<span class="pill '+TAG[t].cls+'">'+ic+TAG[t].label+'</span>';
+  }
+
+  // ---------- Cards ----------
+  function endorseBtn(e){
+    var on = e.endorsers.indexOf(ME) > -1;
+    var own = e.who === ME;
+    var n = e.endorsers.length;
+    var av5 = e.endorsers.slice(0,4).map(function(k){return av(k,"sm")}).join("");
+    var more = n>4 ? '<div class="avatar sm" style="background:var(--slate)">+'+(n-4)+'</div>' : '';
+    var leaf='<svg viewBox="0 0 24 24" fill="'+(on?'currentColor':'none')+'" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+    return '<div class="foot-right">'+
+      (n? '<div class="endorsers">'+av5+more+'</div>':'')+
+      '<button class="endorse '+(on?'on':'')+'" data-endorse="'+e.id+'" '+(own?'disabled title="You can\'t endorse your own entry"':'')+'>'+
+        leaf+'<span>'+(on?'Endorsed':'Endorse')+'</span>'+(n?'<span class="n">· '+n+'</span>':'')+
+      '</button></div>';
+  }
+  function evLink(e){
+    if(!e.ev) return '<span class="ev none">No evidence attached</span>';
+    return '<a class="ev" href="'+e.ev.url+'" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>'+esc(e.ev.label)+'</a>';
+  }
+  function card(e){
+    var p=P[e.who], mine = e.who===ME;
+    var tools = mine ? '<div class="rowtools">'+
+        '<button class="tool" data-edit="'+e.id+'" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></button>'+
+        '<button class="tool danger" data-del="'+e.id+'" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>'+
+      '</div>' : '';
+    return '<article class="card'+(mine?' mine':'')+'">'+
+      '<div class="card-top">'+av(e.who,"md")+
+        '<div class="who"><div class="nm">'+esc(p.name)+(mine?' <span style="color:var(--accent);font-weight:600">· you</span>':'')+'</div>'+
+        '<div class="role">'+p.role+'<span class="loc">'+p.loc+'</span></div></div>'+
+        '<div class="card-date">'+fmtDate(e.date)+'</div></div>'+
+      '<h3>'+esc(e.title)+'</h3>'+
+      '<p class="desc">'+esc(e.desc)+'</p>'+
+      '<div class="badges">'+catChip(e.cat)+tagPill(e.tag)+'<span class="cat" style="border-style:dashed">'+e.q+'</span></div>'+
+      '<div class="card-foot">'+evLink(e)+ (mine? '<div class="foot-right">'+tools+endorseBtn(e).replace(/^<div class="foot-right">|<\/div>$/g,'')+'</div>' : endorseBtn(e))+'</div>'+
+    '</article>';
+  }
+
+  // ---------- Views ----------
+  function filtered(){
+    var f=state.filters;
+    var list = entries.filter(function(e){
+      return (!f.who||e.who===f.who) && (!f.cat||e.cat===f.cat) && (!f.q||e.q===f.q) && (!f.tag||e.tag===f.tag);
+    });
+    list.sort(function(a,b){
+      if(state.sort==="end") return b.endorsers.length-a.endorsers.length || (a.date<b.date?1:-1);
+      return state.sort==="old" ? (a.date<b.date?-1:1) : (a.date<b.date?1:-1);
+    });
+    return list;
+  }
+  function activeCount(){var f=state.filters;return ["who","cat","q","tag"].filter(function(k){return f[k]}).length}
+
+  function opt(val,label,sel){return '<option value="'+val+'"'+(sel===val?' selected':'')+'>'+label+'</option>'}
+  function peopleOpts(sel){return '<option value="">Everyone</option>'+Object.keys(P).map(function(k){return opt(k,P[k].name,sel)}).join("")}
+
+  function feedView(){
+    var f=state.filters, list=filtered();
+    var kpis = ''+
+      kpi("Adoption this quarter","62%","of COE members have posted", 62, "≥50% goal", false)+
+      kpi("Entries logged", String(entries.length), "across 3 quarters", null, "8 active contributors", false)+
+      kpi("Endorsement rate","41%","of entries have a peer signal", 41, "≥30% goal", false)+
+      kpi("Flagged for appraisal", String(entries.filter(function(e){return e.tag!=='sharing'}).length), "Rating-support + TL-case", null, "review before ratings", true);
+
+    var filterRail =
+      '<aside class="filters">'+
+        '<div class="fhead"><b>Filters</b><button class="clear" id="clearF"'+(activeCount()?'':' disabled')+'>Clear'+(activeCount()?' ('+activeCount()+')':'')+'</button></div>'+
+        '<div class="fgroup"><label>Person</label><select data-f="who">'+peopleOpts(f.who)+'</select></div>'+
+        '<div class="fgroup"><label>Category</label><select data-f="cat"><option value="">All categories</option>'+
+          Object.keys(CAT).map(function(k){return opt(k,CAT[k].label,f.cat)}).join("")+'</select></div>'+
+        '<div class="fgroup"><label>Quarter</label><select data-f="q"><option value="">All quarters</option>'+
+          ["Q3 2026","Q2 2026","Q1 2026"].map(function(k){return opt(k,k,f.q)}).join("")+'</select></div>'+
+        '<div class="fgroup divider"><label>Self-tag</label><select data-f="tag"><option value="">Any tag</option>'+
+          Object.keys(TAG).map(function(k){return opt(k,TAG[k].label,f.tag)}).join("")+'</select></div>'+
+      '</aside>';
+
+    var feed = list.length ? list.map(card).join("") :
+      '<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg><b>No entries match these filters</b>Try clearing a filter to see more of the COE\'s work.</div>';
+
+    return '<div class="view-head"><div class="eyebrow">Community feed</div><h2>What the COE has been shipping</h2>'+
+        '<p>Every member\'s noteworthy work in one place — newest first. Filters combine, so you can zoom to one person and quarter at once.</p></div>'+
+      '<div class="kpis">'+kpis+'</div>'+
+      '<div class="layout">'+filterRail+
+        '<section><div class="feedbar"><span class="result-n">Showing <b>'+list.length+'</b> of '+entries.length+' entries</span>'+
+          '<span class="sortsel">Sort <select id="sortSel">'+opt("new","Newest",state.sort)+opt("old","Oldest",state.sort)+opt("end","Most endorsed",state.sort)+'</select></span></div>'+
+          '<div class="feed">'+feed+'</div></section>'+
+      '</div>';
+  }
+  function kpi(lab,num,meta,bar,note,gold){
+    var g='';
+    if(bar!==null) g='<div class="goalbar'+(gold?' gold':'')+'"><i style="width:'+bar+'%"></i></div>';
+    var tick = /goal/.test(note)? '<span class="tick">✓</span> ':'';
+    return '<div class="kpi"><div class="lab">'+lab+'</div><div class="num">'+num+'</div>'+
+      '<div class="meta">'+meta+'</div>'+g+'<div class="meta" style="margin-top:8px">'+tick+note+'</div></div>';
+  }
+
+  function mineView(){
+    var list = entries.filter(function(e){return e.who===ME});
+    var totalEnd = list.reduce(function(s,e){return s+e.endorsers.length},0);
+    var qs = {}; list.forEach(function(e){qs[e.q]=1});
+    var head='<div class="view-head"><div class="eyebrow">Your record</div><h2>My entries</h2>'+
+      '<p>Your running, editable log across the year. Bring it to your appraisal conversation instead of relying on memory.</p></div>';
+    var note='<div class="note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/><circle cx="12" cy="12" r="4"/></svg>Only you can edit or delete these. When appraisals open, you\'ll be able to export this list to attach to your packet.</div>';
+    var strip='<div class="kpis" style="grid-template-columns:repeat(3,1fr)">'+
+      kpi("Your entries",String(list.length),"logged so far",null,"keep it going",false)+
+      kpi("Peer endorsements",String(totalEnd),"across your entries",null,"credibility signals",false)+
+      kpi("Quarters covered",String(Object.keys(qs).length),"of the year",null,"appraisal-ready",false)+'</div>';
+    var body = list.length ? '<div class="feed">'+list.map(card).join("")+'</div>' :
+      '<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 5v14M5 12h14"/></svg><b>You haven\'t logged anything yet</b>Hit <b style="color:var(--accent)">New Entry</b> to add your first piece of work.</div>';
+    return head+note+strip+body;
+  }
+
+  function digestView(){
+    var head='<div class="view-head"><div class="eyebrow">Manager view · Deepak Rao</div><h2>Your team\'s digest</h2>'+
+      '<p>A summary of your four direct reports\' work this cycle — with appraisal-flagged entries pulled to the top so nothing gets lost to memory.</p></div>';
+    var banner='<div class="digest-banner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 2"/><circle cx="12" cy="12" r="9"/></svg>'+
+      '<div><b>Appraisal window opens soon.</b><p>Review each report\'s <b>Rating support</b> and <b>TL case</b> entries before you write their review. "Just sharing" items are shown dimmed for context.</p></div></div>';
+    var blocks = TEAM.map(function(k){
+      var p=P[k];
+      var mine = entries.filter(function(e){return e.who===k});
+      mine.sort(function(a,b){
+        var rank={rating:0,tl:1,sharing:2};
+        return rank[a.tag]-rank[b.tag] || (a.date<b.date?1:-1);
+      });
+      var rc = mine.filter(function(e){return e.tag==="rating"}).length;
+      var tc = mine.filter(function(e){return e.tag==="tl"}).length;
+      var counts = (rc?'<span class="tagcount g">★ '+rc+' rating support</span>':'')+(tc?'<span class="tagcount t">⚑ '+tc+' TL case</span>':'');
+      var rows = mine.map(function(e){
+        var cls = e.tag==="rating"?"rating":e.tag==="tl"?"tl":"dim";
+        return '<div class="mini '+cls+'"><div class="stripe"></div><div class="body">'+
+          '<div class="mt">'+esc(e.title)+'</div><div class="md">'+esc(e.desc)+'</div>'+
+          '<div class="meta">'+catChip(e.cat)+tagPill(e.tag)+'<span class="cat" style="border-style:dashed">'+e.q+'</span>'+
+            (e.ev?'<a class="ev" href="'+e.ev.url+'" target="_blank" rel="noopener" style="margin-left:auto">'+esc(e.ev.label)+'</a>':'')+
+            '<span style="'+(e.ev?'':'margin-left:auto;')+'font-size:11.5px;color:var(--muted)">'+e.endorsers.length+' endorsement'+(e.endorsers.length===1?'':'s')+'</span>'+
+          '</div></div></div>';
+      }).join("");
+      return '<div class="person-block"><div class="person-head">'+av(k,"lg")+
+        '<div class="who"><div class="nm">'+esc(p.name)+'</div><div class="role">'+p.role+' · '+p.loc+' · '+mine.length+' entries</div></div>'+
+        (counts||'<span class="tagcount" style="background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);color:var(--muted)">visibility only</span>')+
+        '</div><div class="person-entries">'+rows+'</div></div>';
+    }).join("");
+    return head+banner+blocks;
+  }
+
+  // ---------- Render ----------
+  function render(){
+    document.querySelectorAll(".tab").forEach(function(t){t.classList.toggle("active", t.dataset.view===state.view)});
+    $("#mineCount").textContent = entries.filter(function(e){return e.who===ME}).length;
+    if(state.view==="feed") main.innerHTML=feedView();
+    else if(state.view==="mine") main.innerHTML=mineView();
+    else main.innerHTML=digestView();
+    window.scrollTo({top:0,behavior:"instant"in window?"instant":"auto"});
+  }
+
+  // ---------- Events (delegated) ----------
+  document.addEventListener("click",function(ev){
+    var t=ev.target.closest("[data-view]");
+    if(t){state.view=t.dataset.view; render(); return;}
+    var en=ev.target.closest("[data-endorse]");
+    if(en && !en.disabled){
+      var e=entries.filter(function(x){return x.id==en.dataset.endorse})[0];
+      var i=e.endorsers.indexOf(ME);
+      if(i>-1){e.endorsers.splice(i,1); toast("Endorsement removed");}
+      else{e.endorsers.push(ME); toast("Endorsed — thanks for the signal");}
+      render(); return;
+    }
+    var edt=ev.target.closest("[data-edit]");
+    if(edt){openSheet("edit", entries.filter(function(x){return x.id==edt.dataset.edit})[0]); return;}
+    var del=ev.target.closest("[data-del]");
+    if(del){entries=entries.filter(function(x){return x.id!=del.dataset.del}); toast("Entry deleted"); render(); return;}
+    var cl=ev.target.closest("#clearF");
+    if(cl && !cl.disabled){state.filters={who:"",cat:"",q:"",tag:""}; render(); return;}
+  });
+  document.addEventListener("change",function(ev){
+    var f=ev.target.closest("[data-f]");
+    if(f){state.filters[f.dataset.f]=f.value; render(); return;}
+    if(ev.target.id==="sortSel"){state.sort=ev.target.value; render();}
+  });
+
+  // ---------- Slide-over ----------
+  var sheet=$("#sheet"), overlay=$("#overlay");
+  function openSheet(mode,e){
+    state.editId = mode==="edit"? e.id : null;
+    $("#sheetTitle").textContent = mode==="edit"?"Edit entry":"New entry";
+    $("#sheetEyebrow").textContent = mode==="edit"?"Update your record":"Log your work";
+    $("#submitLabel").textContent = mode==="edit"?"Save changes":"Post entry";
+    $("#i-title").value=e?e.title:""; $("#i-cat").value=e?e.cat:"";
+    $("#i-desc").value=e?e.desc:""; $("#i-ev").value=(e&&e.ev)?e.ev.url:"";
+    $("#i-tag").value=e?e.tag:"sharing"; $("#i-q").value=e?e.q:"Q3 2026";
+    document.querySelectorAll(".field.invalid").forEach(function(x){x.classList.remove("invalid")});
+    overlay.classList.add("show"); sheet.classList.add("show"); sheet.setAttribute("aria-hidden","false");
+    setTimeout(function(){$("#i-title").focus()},260);
+  }
+  function closeSheet(){overlay.classList.remove("show"); sheet.classList.remove("show"); sheet.setAttribute("aria-hidden","true");}
+  $("#newBtn").addEventListener("click",function(){openSheet("new")});
+  $("#closeSheet").addEventListener("click",closeSheet);
+  $("#cancelSheet").addEventListener("click",closeSheet);
+  overlay.addEventListener("click",closeSheet);
+  document.addEventListener("keydown",function(e){if(e.key==="Escape")closeSheet()});
+
+  // live nudges
+  $("#i-ev").addEventListener("input",function(){$("#ev-nudge").style.display=this.value.trim()?"none":"flex"});
+  $("#i-tag").addEventListener("change",function(){$("#tag-nudge").style.display=this.value==="sharing"?"flex":"none"});
+
+  $("#entryForm").addEventListener("submit",function(ev){ev.preventDefault(); submit();});
+  function submit(){
+    var ok=true;
+    [["f-title","i-title"],["f-cat","i-cat"],["f-desc","i-desc"],["f-q","i-q"]].forEach(function(pair){
+      var field=$("#"+pair[0]), val=$("#"+pair[1]).value.trim();
+      if(!val){field.classList.add("invalid"); ok=false;} else field.classList.remove("invalid");
+    });
+    if(!ok){toast("Fill the required fields"); return;}
+    var evUrl=$("#i-ev").value.trim();
+    var data={
+      title:$("#i-title").value.trim(), cat:$("#i-cat").value, desc:$("#i-desc").value.trim(),
+      ev: evUrl? {label:"View evidence", url:evUrl} : null,
+      tag:$("#i-tag").value, q:$("#i-q").value
+    };
+    if(state.editId){
+      var e=entries.filter(function(x){return x.id==state.editId})[0];
+      Object.keys(data).forEach(function(k){e[k]=data[k]});
+      toast("Entry updated");
+    } else {
+      var todayISO="2026-07-10";
+      entries.unshift(Object.assign({id:++uid, who:ME, date:todayISO, endorsers:[]}, data));
+      toast("Entry posted — it's now visible to the COE");
+    }
+    closeSheet(); state.view="mine"; render();
+  }
+
+  // ---------- Toast ----------
+  var toastEl=$("#toast"), toastT;
+  function toast(msg){$("#toastMsg").textContent=msg; toastEl.classList.add("show"); clearTimeout(toastT); toastT=setTimeout(function(){toastEl.classList.remove("show")},2400);}
+
+  // ---------- Theme ----------
+  $("#themeBtn").addEventListener("click",function(){
+    var cur=document.documentElement.getAttribute("data-theme");
+    var dark = cur? cur==="dark" : matchMedia("(prefers-color-scheme:dark)").matches;
+    document.documentElement.setAttribute("data-theme", dark?"light":"dark");
+    setThemeIcon(!dark);
+  });
+  function setThemeIcon(dark){
+    $("#themeIcon").innerHTML = dark
+      ? '<path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/>'
+      : '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>';
+  }
+
+  render();
+})();
+</script>
