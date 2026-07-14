@@ -1,10 +1,11 @@
-# Kudos — COE Recognition & Visibility Dashboard
+# Karya (कार्य) — McFadyen COE Recognition & Visibility Dashboard
 
-A clickable **v1 mockup** of an internal recognition tool for the India / Brazil Commerce COE
-(Developers, Tech Leads, Architects). It gives every COE member a self-service way to log and
-showcase noteworthy work — a feature, a certification, client praise, or a technical idea — so
-good work is visible beyond a single manager, and so appraisal conversations are backed by a
-running, evidenced record instead of memory.
+**Karya** (Sanskrit/Hindi for *work / deed*) is a clickable **v1 mockup** of an internal
+recognition tool for the McFadyen **India / Brazil Commerce COE** (Developers, Tech Leads,
+Architects). It gives every COE member a self-service way to log and showcase noteworthy work —
+a feature, a certification, client praise, or a technical idea — so good work is visible beyond a
+single manager, and so appraisal conversations are backed by a running, evidenced record instead
+of memory.
 
 > **Status:** interactive prototype for stakeholder review — not a production build.
 > The data is in-memory sample data; nothing is persisted.
@@ -13,9 +14,9 @@ running, evidenced record instead of memory.
 
 Today, visibility into an individual's strong work is filtered almost entirely through their
 direct manager, and appraisals happen only once a year. That creates two problems: good work
-goes unseen by the wider COE, and rating mismatches surface too late to course-correct. This
-dashboard is a lightweight **evidence + visibility layer** — explicitly *not* a replacement for
-the formal appraisal process.
+goes unseen by the wider COE, and rating mismatches surface too late to course-correct. Karya is
+a lightweight **evidence + visibility layer** — explicitly *not* a replacement for the formal
+appraisal process.
 
 ## What's in the mockup (P0 scope)
 
@@ -40,7 +41,7 @@ the formal appraisal process.
 
 ## Run it locally
 
-It's a single self-contained HTML file (all CSS/JS inlined, zero external dependencies).
+It's a single HTML file (`index.html`) plus the McFadyen logo (`mcf-logo.png`).
 
 **Option A — just open it:** double-click `index.html`.
 
@@ -49,20 +50,22 @@ It's a single self-contained HTML file (all CSS/JS inlined, zero external depend
 python -m http.server 8000
 # then open http://localhost:8000/
 ```
-On Windows you can also double-click **`start-demo.bat`**, which starts the server and opens the
-browser for you.
+On Windows you can also double-click **`share-demo.bat`** to expose it publicly via a Cloudflare
+tunnel for a live demo.
 
 ## Design notes
-- **Identity:** a "certificate of merit / seal" direction — deep pine + antique gold, with gold
-  reserved only for the appraisal-critical *Rating support* flag and endorsements. Deliberately
-  avoids a gamified / leaderboard look (a non-goal in the PRD).
-- **Information design:** importance is encoded in *form*, not just color — filled pills for
-  self-tags, quiet outline chips for categories — so it stays legible and colorblind-safe.
+- **Brand:** aligned to **McFadyen Digital** — signature red `#E00000`, charcoal `#313131`,
+  cool-grey grounds, and the **Raleway** typeface. The McFadyen logo appears in the top bar and
+  footer.
+- **Information design:** importance is encoded in *form + colour* — a **red** "Rating support"
+  pill (appraisal-critical) vs a **charcoal** "TL case" pill (promotion track) vs a quiet grey
+  "Just sharing" pill — so what needs attention reads at a glance.
 - **Themes:** full light + dark support, toggle in the top bar.
 
 ## Not included (deliberately)
 Per the PRD, P1/P2 items are held back until the core loop proves out: GitHub link enrichment,
-weekly email digests, export-to-PDF, analytics, and deeper HR/GitHub API integrations.
+weekly email digests, export-to-doc, analytics, and deeper HR/GitHub API integrations.
 
 ---
-*Built as a review artifact for the COE Recognition Dashboard PRD (v1).*
+*Built as a review artifact for the COE Recognition Dashboard PRD (v1). "McFadyen" and the
+McFadyen Digital logo are trademarks of McFadyen Digital, used here for an internal company tool.*

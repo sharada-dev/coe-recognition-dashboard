@@ -1,53 +1,67 @@
-<title>Kudos — COE Recognition Dashboard</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Karya — McFadyen COE Recognition</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#F4F6F5; --surface:#FFFFFF; --surface-2:#FAFBFA;
-    --ink:#191D1B; --muted:#5C6560; --faint:#8B938E;
-    --border:#E4E8E5; --border-strong:#D3D9D5;
-    --accent:#0F6E5E; --accent-ink:#0B564A; --accent-tint:#E7F1EE; --accent-tint-2:#D6E8E3;
-    --gold:#8A5E10; --gold-tint:#F6EBD2; --gold-line:#E4CE9C;
+    --bg:#F4F6F8; --surface:#FFFFFF; --surface-2:#EEF2F6;
+    --ink:#23262B; --muted:#586069; --faint:#8A929B;
+    --border:#E2E7EC; --border-strong:#CDD5DC;
+    --accent:#E00000; --accent-ink:#B00000; --accent-tint:#FCEAEA; --accent-tint-2:#F6D2D2;
+    --gold:#B00000; --gold-tint:#FCEAEA; --gold-line:#F3C9C9;
+    --charcoal:#313131; --tl-bg:#EAECEF; --tl-fg:#31353A; --tl-line:#D5DADE;
+    --footer-bg:#26282B;
     --blue:#2F6FB0; --violet:#6D4AA6; --rose:#A6455F; --cyan:#12807A; --slate:#5B6672;
-    --good:#1E7A4C; --warn:#9A6B12;
-    --shadow:0 1px 2px rgba(16,32,28,.05), 0 4px 18px rgba(16,32,28,.05);
-    --shadow-lg:0 12px 40px rgba(16,32,28,.16);
+    --good:#1E7A4C; --warn:#B4690E;
+    --shadow:0 1px 2px rgba(20,26,33,.05), 0 4px 18px rgba(20,26,33,.06);
+    --shadow-lg:0 12px 40px rgba(20,26,33,.18);
     --r:12px; --r-sm:8px; --r-pill:999px;
-    --serif:Georgia,"Iowan Old Style","Times New Roman",serif;
-    --sans:"Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,Helvetica,Arial,sans-serif;
+    --serif:"Raleway","Segoe UI",system-ui,sans-serif;
+    --sans:"Raleway","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,Helvetica,Arial,sans-serif;
+    --deva:"Noto Sans Devanagari","Nirmala UI","Segoe UI",sans-serif;
   }
   @media (prefers-color-scheme:dark){
     :root{
-      --bg:#0D1411; --surface:#141C18; --surface-2:#101613;
-      --ink:#E9EEEB; --muted:#9AA6A0; --faint:#77837D;
-      --border:#233029; --border-strong:#2F3E36;
-      --accent:#3FBFA6; --accent-ink:#8FE0D0; --accent-tint:#12302A; --accent-tint-2:#194138;
-      --gold:#D9AD54; --gold-tint:#2C2411; --gold-line:#4A3C1C;
+      --bg:#16181C; --surface:#1E2126; --surface-2:#191C21;
+      --ink:#EAEDF0; --muted:#9BA3AC; --faint:#727A84;
+      --border:#2C3138; --border-strong:#3A414A;
+      --accent:#FF4D4D; --accent-ink:#FF8585; --accent-tint:#3A1616; --accent-tint-2:#4E1D1D;
+      --gold:#FF8585; --gold-tint:#3A1616; --gold-line:#4E1D1D;
+      --charcoal:#C6CCD2; --tl-bg:#2B3037; --tl-fg:#C6CCD2; --tl-line:#3B424A;
+      --footer-bg:#0F1113;
       --blue:#6AA6E0; --violet:#A98BD8; --rose:#DD8AA0; --cyan:#4FC3B8; --slate:#93A0A9;
-      --good:#4FC98A; --warn:#D9AD54;
+      --good:#4FC98A; --warn:#E0B267;
       --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 26px rgba(0,0,0,.36);
       --shadow-lg:0 16px 50px rgba(0,0,0,.55);
     }
   }
   :root[data-theme="dark"]{
-    --bg:#0D1411; --surface:#141C18; --surface-2:#101613;
-    --ink:#E9EEEB; --muted:#9AA6A0; --faint:#77837D;
-    --border:#233029; --border-strong:#2F3E36;
-    --accent:#3FBFA6; --accent-ink:#8FE0D0; --accent-tint:#12302A; --accent-tint-2:#194138;
-    --gold:#D9AD54; --gold-tint:#2C2411; --gold-line:#4A3C1C;
+    --bg:#16181C; --surface:#1E2126; --surface-2:#191C21;
+    --ink:#EAEDF0; --muted:#9BA3AC; --faint:#727A84;
+    --border:#2C3138; --border-strong:#3A414A;
+    --accent:#FF4D4D; --accent-ink:#FF8585; --accent-tint:#3A1616; --accent-tint-2:#4E1D1D;
+    --gold:#FF8585; --gold-tint:#3A1616; --gold-line:#4E1D1D;
+    --charcoal:#C6CCD2; --tl-bg:#2B3037; --tl-fg:#C6CCD2; --tl-line:#3B424A;
+    --footer-bg:#0F1113;
     --blue:#6AA6E0; --violet:#A98BD8; --rose:#DD8AA0; --cyan:#4FC3B8; --slate:#93A0A9;
-    --good:#4FC98A; --warn:#D9AD54;
+    --good:#4FC98A; --warn:#E0B267;
     --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 26px rgba(0,0,0,.36);
     --shadow-lg:0 16px 50px rgba(0,0,0,.55);
   }
   :root[data-theme="light"]{
-    --bg:#F4F6F5; --surface:#FFFFFF; --surface-2:#FAFBFA;
-    --ink:#191D1B; --muted:#5C6560; --faint:#8B938E;
-    --border:#E4E8E5; --border-strong:#D3D9D5;
-    --accent:#0F6E5E; --accent-ink:#0B564A; --accent-tint:#E7F1EE; --accent-tint-2:#D6E8E3;
-    --gold:#8A5E10; --gold-tint:#F6EBD2; --gold-line:#E4CE9C;
+    --bg:#F4F6F8; --surface:#FFFFFF; --surface-2:#EEF2F6;
+    --ink:#23262B; --muted:#586069; --faint:#8A929B;
+    --border:#E2E7EC; --border-strong:#CDD5DC;
+    --accent:#E00000; --accent-ink:#B00000; --accent-tint:#FCEAEA; --accent-tint-2:#F6D2D2;
+    --gold:#B00000; --gold-tint:#FCEAEA; --gold-line:#F3C9C9;
+    --charcoal:#313131; --tl-bg:#EAECEF; --tl-fg:#31353A; --tl-line:#D5DADE;
+    --footer-bg:#26282B;
     --blue:#2F6FB0; --violet:#6D4AA6; --rose:#A6455F; --cyan:#12807A; --slate:#5B6672;
-    --good:#1E7A4C; --warn:#9A6B12;
-    --shadow:0 1px 2px rgba(16,32,28,.05), 0 4px 18px rgba(16,32,28,.05);
-    --shadow-lg:0 12px 40px rgba(16,32,28,.16);
+    --good:#1E7A4C; --warn:#B4690E;
+    --shadow:0 1px 2px rgba(20,26,33,.05), 0 4px 18px rgba(20,26,33,.06);
+    --shadow-lg:0 12px 40px rgba(20,26,33,.18);
   }
 
   *{box-sizing:border-box}
@@ -70,14 +84,18 @@
   }
   .topbar-in{display:flex; align-items:center; gap:16px; height:60px}
   .brand{display:flex; align-items:center; gap:10px; margin-right:6px}
-  .seal{
-    width:32px; height:32px; border-radius:9px; flex:none;
-    background:linear-gradient(150deg, var(--accent), var(--accent-ink));
-    display:grid; place-items:center; color:#fff; box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);
-  }
-  .seal svg{width:18px; height:18px}
-  .wordmark{font-family:var(--serif); font-size:19px; font-weight:700; letter-spacing:.2px}
-  .wordmark .sub{font-family:var(--sans); font-weight:600; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); display:block; margin-top:-2px}
+  .mcf-logo{height:30px; width:auto; display:block; border-radius:3px}
+  .brand-div{width:1px; height:26px; background:var(--border-strong); margin:0 3px}
+  .wordmark{font-family:var(--serif); font-size:19px; font-weight:800; letter-spacing:-.1px; line-height:1.05}
+  .deva{font-family:var(--deva); font-weight:700; font-size:.78em; color:var(--accent); margin-left:2px}
+  .wordmark .sub{font-family:var(--sans); font-weight:600; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); display:block; margin-top:1px}
+  .site-foot{background:var(--footer-bg); margin-top:44px}
+  .foot-in{display:flex; align-items:center; gap:16px; padding:20px 0; flex-wrap:wrap}
+  .foot-brand{background:#fff; padding:7px 9px; border-radius:7px; display:inline-flex; flex:none; box-shadow:0 1px 3px rgba(0,0,0,.25)}
+  .foot-brand .mcf-logo{height:26px}
+  .foot-text{color:#C3C8CE; font-size:12px; line-height:1.5}
+  .foot-text b{color:#fff; font-weight:700}
+  .foot-text span{display:block; color:#8A9098; margin-top:3px}
   .top-spacer{flex:1}
   .chip-region{
     display:inline-flex; align-items:center; gap:7px; font-size:12.5px; font-weight:600; color:var(--muted);
@@ -185,7 +203,7 @@
   .pill{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:var(--r-pill);letter-spacing:.01em}
   .pill svg{width:12px;height:12px}
   .pill--rating{background:var(--gold-tint);color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold-line)}
-  .pill--tl{background:var(--accent-tint);color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent-tint-2)}
+  .pill--tl{background:var(--tl-bg);color:var(--tl-fg);box-shadow:inset 0 0 0 1px var(--tl-line)}
   .pill--sharing{background:var(--surface-2);color:var(--muted);box-shadow:inset 0 0 0 1px var(--border)}
 
   .card-foot{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:14px; padding-top:13px; border-top:1px solid var(--border)}
@@ -228,14 +246,14 @@
   .person-head .role{font-size:11.5px;color:var(--muted)}
   .tagcount{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:var(--r-pill)}
   .tagcount.g{background:var(--gold-tint);color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold-line)}
-  .tagcount.t{background:var(--accent-tint);color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent-tint-2)}
+  .tagcount.t{background:var(--tl-bg);color:var(--tl-fg);box-shadow:inset 0 0 0 1px var(--tl-line)}
   .person-entries{padding:6px 8px}
   .mini{display:flex;align-items:flex-start;gap:11px;padding:11px 10px;border-radius:var(--r-sm)}
   .mini + .mini{border-top:1px solid var(--border)}
   .mini.dim{opacity:.62}
   .mini .stripe{width:3px;align-self:stretch;border-radius:3px;background:var(--border);flex:none;min-height:34px}
   .mini.rating .stripe{background:var(--gold)}
-  .mini.tl .stripe{background:var(--accent)}
+  .mini.tl .stripe{background:var(--charcoal)}
   .mini .body{flex:1;min-width:0}
   .mini .body .mt{font-weight:600;font-size:13.5px}
   .mini .body .md{font-size:12px;color:var(--muted);margin-top:2px}
@@ -300,12 +318,11 @@
   <header class="topbar">
     <div class="wrap topbar-in">
       <div class="brand">
-        <div class="seal" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.21 13.89 7 23l5-3 5 3-1.21-9.12"/><circle cx="12" cy="8" r="6"/></svg>
-        </div>
-        <div class="wordmark">Kudos<span class="sub">India · Brazil Commerce COE</span></div>
+        <img class="mcf-logo" src="mcf-logo.png" alt="McFadyen Digital" width="80" height="30" />
+        <span class="brand-div"></span>
+        <div class="wordmark">Karya <span class="deva">कार्य</span><span class="sub">McFadyen · Commerce COE</span></div>
       </div>
-      <span class="chip-region"><span class="dot2"></span>Commerce COE · Pilot</span>
+      <span class="chip-region"><span class="dot2"></span>India–Brazil Pilot</span>
       <div class="top-spacer"></div>
       <button class="icon-btn" id="themeBtn" title="Toggle theme" aria-label="Toggle light/dark theme">
         <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
@@ -341,6 +358,16 @@
   </nav>
 
   <main class="wrap" id="main"></main>
+
+  <footer class="site-foot">
+    <div class="wrap foot-in">
+      <div class="foot-brand"><img class="mcf-logo" src="mcf-logo.png" alt="McFadyen Digital" width="80" height="30" /></div>
+      <div class="foot-text">
+        <b>Karya कार्य</b> — an internal recognition pilot for the McFadyen Commerce COE.
+        <span>© 2026 McFadyen Digital · A supporting evidence layer, not a replacement for the formal appraisal process.</span>
+      </div>
+    </div>
+  </footer>
 </div>
 
 <!-- Slide-over form -->
