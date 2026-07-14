@@ -1,7 +1,7 @@
-# Karya (कार्य) — McFadyen COE Recognition & Visibility Dashboard
+# Karya (कार्य) — McFadyen Developer Impact Tracker
 
 **Karya** (Sanskrit/Hindi for *work / deed*) is a clickable **v1 mockup** of an internal
-recognition tool for the McFadyen **India / Brazil Commerce COE** (Developers, Tech Leads,
+Developer Impact Tracker for the McFadyen **India / Brazil Commerce COE** (Developers, Tech Leads,
 Architects). It gives every COE member a self-service way to log and showcase noteworthy work —
 a feature, a certification, client praise, or a technical idea — so good work is visible beyond a
 single manager, and so appraisal conversations are backed by a running, evidenced record instead
@@ -67,5 +67,5 @@ Per the PRD, P1/P2 items are held back until the core loop proves out: GitHub li
 weekly email digests, export-to-doc, analytics, and deeper HR/GitHub API integrations.
 
 ---
-*Built as a review artifact for the COE Recognition Dashboard PRD (v1). "McFadyen" and the
+*Built as a review artifact for the Developer Impact Tracker PRD (v1). "McFadyen" and the
 McFadyen Digital logo are trademarks of McFadyen Digital, used here for an internal company tool.*
