@@ -1,2 +1,4 @@
 Thumbs.db
 .DS_Store
+cloudflared.log
+cloudflared.out
