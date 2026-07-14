@@ -158,6 +158,20 @@
   .goalbar i{display:block;height:100%;border-radius:3px;background:var(--accent)}
   .goalbar.gold i{background:var(--gold)}
 
+  /* Quote of the day */
+  .quote{display:flex; align-items:flex-start; gap:14px; background:var(--footer-bg); color:#fff; border-radius:var(--r); padding:15px 18px 16px; margin-bottom:22px; position:relative; overflow:hidden; box-shadow:var(--shadow)}
+  .quote:before{content:""; position:absolute; left:0; top:0; bottom:0; width:4px; background:var(--accent)}
+  .quote-mark{font-family:var(--serif); font-size:50px; line-height:.75; color:var(--accent); font-weight:800; flex:none}
+  .quote-body{flex:1; min-width:0}
+  .quote-eyebrow{font-size:10.5px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:#FF6B6B; margin-bottom:6px}
+  .quote-text{font-family:var(--serif); font-size:17px; font-weight:600; font-style:italic; line-height:1.42; margin:0; color:#F2F4F6; text-wrap:balance}
+  .quote-by{font-size:12px; color:#A7ADB4; margin-top:9px; font-weight:600; font-style:normal}
+  .quote-shuffle{flex:none; width:34px; height:34px; border-radius:8px; border:1px solid rgba(255,255,255,.18); background:rgba(255,255,255,.06); color:#D7DBDF; display:grid; place-items:center; transition:.14s}
+  .quote-shuffle:hover{background:rgba(255,255,255,.13); color:#fff}
+  .quote-shuffle:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+  .quote-shuffle svg{width:16px; height:16px}
+  @media (max-width:520px){ .quote-mark{display:none} }
+
   .layout{display:grid; grid-template-columns:236px 1fr; gap:24px; align-items:start}
 
   /* Filters */
@@ -520,7 +534,7 @@
   // ---------- Helpers ----------
   var $ = function(s,r){return (r||document).querySelector(s)};
   var main = $("#main");
-  var state = {view:"feed", filters:{who:"",cat:"",q:"",tag:""}, sort:"new", editId:null};
+  var state = {view:"feed", filters:{who:"",cat:"",q:"",tag:""}, sort:"new", editId:null, quoteIdx:null};
 
   function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
   function av(key,size){var p=P[key];return '<div class="avatar '+(size||"sm")+'" style="background:'+p.c+'" title="'+esc(p.name)+'">'+p.ini+'</div>'}
@@ -586,6 +600,36 @@
   function opt(val,label,sel){return '<option value="'+val+'"'+(sel===val?' selected':'')+'>'+label+'</option>'}
   function peopleOpts(sel){return '<option value="">Everyone</option>'+Object.keys(P).map(function(k){return opt(k,P[k].name,sel)}).join("")}
 
+  var QUOTES = [
+    {text:"Take a break, fix my crown, and conquer it once again — it's not me, it's within me.", by:"— Overheard in the COE"},
+    {text:"Craft over noise. Evidence over memory.", by:"— The Karya way"},
+    {text:"Ship it, own it, then help someone else do the same.", by:""},
+    {text:"Small commits, steady wins — consistency compounds.", by:""},
+    {text:"Your work today is someone's reference tomorrow.", by:""},
+    {text:"Great work speaks for itself; Karya just makes sure it's heard.", by:""},
+    {text:"A team that celebrates each other ships better together.", by:""},
+    {text:"Log the win while it's fresh — your future self will thank you at appraisal time.", by:""}
+  ];
+  function currentQuoteIndex(){
+    if(state.quoteIdx!=null) return ((state.quoteIdx % QUOTES.length)+QUOTES.length)%QUOTES.length;
+    var now=new Date(), start=new Date(now.getFullYear(),0,0);
+    var day=Math.floor((now-start)/86400000);
+    return day % QUOTES.length;
+  }
+  function quoteBanner(){
+    var q=QUOTES[currentQuoteIndex()];
+    return '<div class="quote">'+
+      '<div class="quote-mark" aria-hidden="true">“</div>'+
+      '<div class="quote-body">'+
+        '<div class="quote-eyebrow">Quote of the day</div>'+
+        '<p class="quote-text">'+esc(q.text)+'</p>'+
+        (q.by? '<div class="quote-by">'+esc(q.by)+'</div>':'')+
+      '</div>'+
+      '<button class="quote-shuffle" id="qShuffle" title="Show another quote" aria-label="Show another quote">'+
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>'+
+      '</button>'+
+    '</div>';
+  }
   function feedView(){
     var f=state.filters, list=filtered();
     var kpis = ''+
@@ -611,6 +655,7 @@
 
     return '<div class="view-head"><div class="eyebrow">Community feed</div><h2>What the COE has been shipping</h2>'+
         '<p>Every member\'s noteworthy work in one place — newest first. Filters combine, so you can zoom to one person and quarter at once.</p></div>'+
+      quoteBanner()+
       '<div class="kpis">'+kpis+'</div>'+
       '<div class="layout">'+filterRail+
         '<section><div class="feedbar"><span class="result-n">Showing <b>'+list.length+'</b> of '+entries.length+' entries</span>'+
@@ -688,6 +733,8 @@
   document.addEventListener("click",function(ev){
     var t=ev.target.closest("[data-view]");
     if(t){state.view=t.dataset.view; render(); return;}
+    var qs=ev.target.closest("#qShuffle");
+    if(qs){ var cur=currentQuoteIndex(), n=cur; if(QUOTES.length>1){ while(n===cur){ n=Math.floor(Math.random()*QUOTES.length); } } state.quoteIdx=n; render(); return;}
     var en=ev.target.closest("[data-endorse]");
     if(en && !en.disabled){
       var e=entries.filter(function(x){return x.id==en.dataset.endorse})[0];
