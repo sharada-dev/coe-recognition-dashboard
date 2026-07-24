@@ -601,20 +601,18 @@
   function peopleOpts(sel){return '<option value="">Everyone</option>'+Object.keys(P).map(function(k){return opt(k,P[k].name,sel)}).join("")}
 
   var QUOTES = [
+    {text:"Great work speaks for itself; Karya just makes sure it's heard.", by:""},
     {text:"Take a break, fix my crown, and conquer it once again — it's not me, it's within me.", by:"— Overheard in the COE"},
     {text:"Craft over noise. Evidence over memory.", by:"— The Karya way"},
     {text:"Ship it, own it, then help someone else do the same.", by:""},
     {text:"Small commits, steady wins — consistency compounds.", by:""},
     {text:"Your work today is someone's reference tomorrow.", by:""},
-    {text:"Great work speaks for itself; Karya just makes sure it's heard.", by:""},
     {text:"A team that celebrates each other ships better together.", by:""},
     {text:"Log the win while it's fresh — your future self will thank you at appraisal time.", by:""}
   ];
   function currentQuoteIndex(){
     if(state.quoteIdx!=null) return ((state.quoteIdx % QUOTES.length)+QUOTES.length)%QUOTES.length;
-    var now=new Date(), start=new Date(now.getFullYear(),0,0);
-    var day=Math.floor((now-start)/86400000);
-    return day % QUOTES.length;
+    return 0; // featured default: "Great work speaks for itself; Karya just makes sure it's heard."
   }
   function quoteBanner(){
     var q=QUOTES[currentQuoteIndex()];
